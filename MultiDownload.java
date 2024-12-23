@@ -1,3 +1,4 @@
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -5,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MultiDownload implements Runnable {
+
     private final URL resourceUrl;
     private final long rangeStart, rangeEnd;
     private final int chunkIndex;
@@ -23,12 +25,12 @@ public class MultiDownload implements Runnable {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) resourceUrl.openConnection();
+            connection.setInstanceFollowRedirects(true);
             String byteRange = "bytes=" + rangeStart + "-" + rangeEnd;
             connection.setRequestProperty("Range", byteRange);
             connection.connect();
 
-            try (InputStream inputStream = connection.getInputStream();
-                 FileOutputStream fileOutput = new FileOutputStream(downloadDirectory + "/part" + chunkIndex)) {
+            try (InputStream inputStream = connection.getInputStream(); FileOutputStream fileOutput = new FileOutputStream(downloadDirectory + "/part" + chunkIndex)) {
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
